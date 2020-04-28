@@ -1,9 +1,12 @@
 from django.db import models
 
 # Create your models here.
-class MLModel(models.Model):
+from django.db import models
+
+# Create your models here.
+class DLModel(models.Model):
     name = models.CharField(max_length=50)
-    learning_method = models.CharField(max_length=50)
+    use_case = models.CharField(max_length=50)
     catagory = models.CharField(max_length=50)
 
     def __str__(self):

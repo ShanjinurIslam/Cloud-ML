@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:machinelearning/model/ServerStatus.dart';
+import 'package:machinelearning/view/choice.dart';
 
 String url = 'http://192.168.0.106:8000/status';
 
@@ -26,9 +29,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void getServerStatus() async {
     final response = await http.get(url);
-    ServerStatus status = responseFromJson(response.body);
+    ServerStatus status = ServerStatus.fromJson(jsonDecode(response.body));
     if (status.status == "active") {
-      Navigator.pushReplacementNamed(context, '/choicelist');
+      Navigator.of(context).pushReplacement(new PageRouteBuilder(
+          pageBuilder: (BuildContext context, _, __) {
+        return new ChoiceList();
+      }, transitionsBuilder:
+              (_, Animation<double> animation, __, Widget child) {
+        return new FadeTransition(opacity: animation, child: child);
+      }));
     } else {
       print('Server is busy. Try Again Later');
     }
@@ -50,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: width,
                         child: Center(
                           child: Text(
-                            'Machine Learning API',
+                            'Cloud ML',
                             style: TextStyle(
                                 fontSize: 28, fontWeight: FontWeight.w400),
                           ),
@@ -78,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     top: (812 / height) * 602,
                     left: (375 / width) * 56,
+                    right: (375 / width) * 56,
                   ),
                 ],
               ));

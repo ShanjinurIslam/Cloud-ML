@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'utils',
     'ml',
-    'cnn',
-    'ann',
+    'dl'
 ]
 
 MIDDLEWARE = [

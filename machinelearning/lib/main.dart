@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         fontFamily: 'Montserrat',
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.green,
       ),
       routes: routes,
     );
