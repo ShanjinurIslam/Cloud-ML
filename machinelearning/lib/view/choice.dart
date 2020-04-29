@@ -6,9 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:machinelearning/model/DLModel.dart';
 import 'package:machinelearning/model/MLModel.dart';
 
-String mlModelsURL =
-    "http://192.168.0.106:8000/ml/models"; //subject to change depending on ip address
-String dlModelsURL = "http://192.168.0.106:8000/dl/models";
+import '../static.dart';
 
 class ChoiceList extends StatefulWidget {
   @override
@@ -48,7 +46,6 @@ class ChoiceListState extends State<ChoiceList> {
 
   @override
   Widget build(BuildContext context) {
-    int number = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
@@ -65,14 +62,14 @@ class ChoiceListState extends State<ChoiceList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            'Available Models'.toUpperCase(),
+                            'Home'.toUpperCase(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            number.toString()+' Models',
+                            'Available Models',
                             style: TextStyle(
                                 color: Color.fromRGBO(36, 240, 182, 1),
                                 fontSize: 14,
@@ -103,9 +100,9 @@ class ChoiceListState extends State<ChoiceList> {
                                 child: Text(
                               'Machine Learning',
                               style: TextStyle(
-                                  fontWeight: screen
-                                      ? FontWeight.w600
-                                      : FontWeight.w400),
+                                  color: screen
+                                      ? Colors.black
+                                      : Colors.grey),
                             )),
                           )),
                       GestureDetector(
@@ -120,9 +117,9 @@ class ChoiceListState extends State<ChoiceList> {
                               child: Text(
                             'Deep Learning',
                             style: TextStyle(
-                                fontWeight: !screen
-                                    ? FontWeight.w600
-                                    : FontWeight.w400),
+                                color: !screen
+                                      ? Colors.black
+                                      : Colors.grey),
                           )),
                         ),
                       ),

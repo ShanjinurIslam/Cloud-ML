@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:machinelearning/model/ServerStatus.dart';
 import 'package:machinelearning/view/choice.dart';
 
-String url = 'http://192.168.0.106:8000/status';
+import '../static.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -23,12 +23,40 @@ class _MyHomePageState extends State<MyHomePage> {
     getServerStatus();
     setState(() {
       flag = !flag;
-      print(flag);
     });
   }
 
+  Future<void> _handleClickMe() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Can not connect to server'),
+          content: Text('Server may be down or an update may be going on'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('Done'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void getServerStatus() async {
-    final response = await http.get(url);
+    http.Response response;
+    try {
+      response = await http.get(statusUrl).timeout(const Duration(seconds: 2));
+    } on TimeoutException catch (_) {
+      setState(() {
+        flag = false;
+      });
+      _handleClickMe();
+    }
     ServerStatus status = ServerStatus.fromJson(jsonDecode(response.body));
     if (status.status == "active") {
       Navigator.of(context).pushReplacement(new PageRouteBuilder(
@@ -39,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return new FadeTransition(opacity: animation, child: child);
       }));
     } else {
-      print('Server is busy. Try Again Later');
+      return _handleClickMe();
     }
   }
 
@@ -51,25 +79,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         body: flag
             ? Center(child: CupertinoActivityIndicator())
-            : Stack(
-                children: <Widget>[
-                  Positioned(
-                    child: Container(
-                        height: 96,
-                        width: width,
+            : Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
                         child: Center(
-                          child: Text(
-                            'Cloud ML',
-                            style: TextStyle(
-                                fontSize: 28, fontWeight: FontWeight.w400),
-                          ),
-                        )),
-                    top: (812 / height) * 218,
-                    left: 0,
-                    right: 0,
-                  ),
-                  Positioned(
-                    child: RaisedButton(
+                      child: Text(
+                        'Cloud ML',
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.w400),
+                      ),
+                    )),
+                    Flexible(child: Image.asset('images/ml.png',scale: 2,),flex: 10,),
+                    Flexible(
+                      flex: 1,
+                        child: RaisedButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       color: Color.fromRGBO(147, 120, 255, 1),
@@ -84,12 +111,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                    ),
-                    top: (812 / height) * 602,
-                    left: (375 / width) * 56,
-                    right: (375 / width) * 56,
-                  ),
-                ],
+                    ))
+                  ],
+                ),
               ));
   }
 }
