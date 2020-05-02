@@ -2,51 +2,39 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:machinelearning/model/Example.dart';
 import 'package:http/http.dart' as http;
-import 'package:machinelearning/model/DLModel.dart';
-import 'package:machinelearning/model/MLModel.dart';
 import 'package:machinelearning/model/model.dart';
+import 'package:machinelearning/static.dart';
 
-import '../static.dart';
-
-class ChoiceList extends StatefulWidget {
+class ModelPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new ChoiceListState();
+    return ModelPageState();
   }
 }
 
-class ChoiceListState extends State<ChoiceList> {
-  bool screen = true;
-
-  Future<List<MLModel>> mlModels() async {
-    final response = await http.get(mlModelsURL);
+Future<List<Example>> examples(Model model) async {
+    String modelName = model.apiName ;
+    String url = model.type=='ml'?mlmodelExamples:dlmodelExamples;
+    print(url+modelName);
+    final response = await http.get(url+modelName);
     Map<String, dynamic> json = jsonDecode(response.body);
-    List<dynamic> jsonModels = json['models'];
-    List<MLModel> mlModels = new List<MLModel>();
-
+    List<dynamic> jsonModels = json['examples'];
+    List<Example> examples = new List<Example>();
+    
     for (int i = 0; i < jsonModels.length; i++) {
       Map<String, dynamic> json = jsonModels[i];
-      mlModels.add(MLModel.fromJson(json));
+      examples.add(Example.fromJson(json));
     }
-    return mlModels;
+    print(examples.length);
+    return examples;
   }
 
-  Future<List<DLModel>> dlModels() async {
-    final response = await http.get(dlModelsURL);
-    Map<String, dynamic> json = jsonDecode(response.body);
-    List<dynamic> jsonModels = json['models'];
-    List<DLModel> dlModels = new List<DLModel>();
-
-    for (int i = 0; i < jsonModels.length; i++) {
-      Map<String, dynamic> json = jsonModels[i];
-      dlModels.add(DLModel.fromJson(json));
-    }
-    return dlModels;
-  }
-
+class ModelPageState extends State<ModelPage> {
   @override
   Widget build(BuildContext context) {
+    Model model = ModalRoute.of(context).settings.arguments;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -60,19 +48,19 @@ class ChoiceListState extends State<ChoiceList> {
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child: Align(
-                      alignment: Alignment.bottomCenter,
+                      alignment: Alignment.center,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            'Home'.toUpperCase(),
+                            model.name.toUpperCase(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            'Available Models',
+                            model.catagory,
                             style: TextStyle(
                                 color: Color.fromRGBO(36, 240, 182, 1),
                                 fontSize: 14,
@@ -84,49 +72,7 @@ class ChoiceListState extends State<ChoiceList> {
                   ),
                 )),
             Flexible(
-                flex: width > height ? 2 : 1,
-                child: Container(
-                  height: 100,
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                screen = true;
-                              });
-                            },
-                            child: Center(
-                                child: Text(
-                              'Machine Learning',
-                              style: TextStyle(
-                                  color: screen ? Colors.black : Colors.grey),
-                            )),
-                          )),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            screen = false;
-                          });
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Center(
-                              child: Text(
-                            'Deep Learning',
-                            style: TextStyle(
-                                color: !screen ? Colors.black : Colors.grey),
-                          )),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            Flexible(
-                flex: 10,
+                flex: 12,
                 child: Container(
                   color: Colors.white,
                   child: Center(
@@ -141,7 +87,7 @@ class ChoiceListState extends State<ChoiceList> {
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
                                 String name = snapshot.data[index].name;
-                                String catagory = snapshot.data[index].catagory;
+                                String catagory = model.catagory;
                                 String imgURL;
                                 if (catagory == "Classification") {
                                   imgURL = 'images/classification.png';
@@ -193,12 +139,6 @@ class ChoiceListState extends State<ChoiceList> {
                                                     icon: Icon(
                                                         CupertinoIcons.forward),
                                                     onPressed: () {
-                                                      Model model = snapshot
-                                                              .data[index];
-                                                      model.type = screen ? 'ml' : 'dl';
-                                                      Navigator.pushNamed(
-                                                          context, '/model',
-                                                          arguments: model);
                                                     }),
                                                 flex: 1,
                                               )
@@ -210,7 +150,7 @@ class ChoiceListState extends State<ChoiceList> {
                           return Container();
                         }
                       },
-                      future: screen ? mlModels() : dlModels(),
+                      future: examples(model),
                     ),
                   ),
                 )),

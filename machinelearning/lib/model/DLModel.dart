@@ -1,15 +1,16 @@
-class DLModel {
-  final int id;
-  final String name;
-  final String useCase;
-  final String catagory;
+import 'model.dart';
 
-  DLModel({this.id, this.name, this.useCase, this.catagory});
+class DLModel extends Model {
+  final String useCase;
+
+  DLModel({id, name, apiName, this.useCase, catagory})
+      : super(id: id, name: name, apiName: apiName, catagory: catagory);
 
   factory DLModel.fromJson(Map<String, dynamic> json) {
     return DLModel(
         id: json['id'],
         name: json['name'],
+        apiName: json["api_name"],
         useCase: json['use_case'],
         catagory: json['catagory']);
   }
