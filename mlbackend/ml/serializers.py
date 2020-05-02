@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from .models import MLModel
+from .models import MLModel,MLModelExamples
 
 class MLModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = MLModel
-        fields = ('id','name','learning_method','catagory')
+        fields = ('id','name','api_name','learning_method','catagory')
 
+class MLModelExamplesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MLModelExamples
+        fields = ('id','fields',)

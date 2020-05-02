@@ -46,6 +46,8 @@ class ChoiceListState extends State<ChoiceList> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
@@ -81,7 +83,7 @@ class ChoiceListState extends State<ChoiceList> {
                   ),
                 )),
             Flexible(
-                flex: 1,
+                flex: width > height ? 2 : 1,
                 child: Container(
                   height: 100,
                   color: Colors.white,
@@ -100,9 +102,7 @@ class ChoiceListState extends State<ChoiceList> {
                                 child: Text(
                               'Machine Learning',
                               style: TextStyle(
-                                  color: screen
-                                      ? Colors.black
-                                      : Colors.grey),
+                                  color: screen ? Colors.black : Colors.grey),
                             )),
                           )),
                       GestureDetector(
@@ -117,9 +117,7 @@ class ChoiceListState extends State<ChoiceList> {
                               child: Text(
                             'Deep Learning',
                             style: TextStyle(
-                                color: !screen
-                                      ? Colors.black
-                                      : Colors.grey),
+                                color: !screen ? Colors.black : Colors.grey),
                           )),
                         ),
                       ),
@@ -152,7 +150,9 @@ class ChoiceListState extends State<ChoiceList> {
                                   imgURL = 'images/clustering.png';
                                 }
                                 return Container(
-                                    margin: EdgeInsets.all(10),
+                                    margin: width > height
+                                        ? EdgeInsets.fromLTRB(35, 10, 35, 10)
+                                        : EdgeInsets.all(10),
                                     height: 150,
                                     child: Card(
                                         shape: RoundedRectangleBorder(
@@ -179,6 +179,7 @@ class ChoiceListState extends State<ChoiceList> {
                                               Flexible(
                                                 child: Text(
                                                   name,
+                                                  textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
