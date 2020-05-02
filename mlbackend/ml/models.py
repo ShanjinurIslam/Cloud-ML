@@ -11,9 +11,11 @@ class MLModel(models.Model):
         return self.name
 
 class MLModelExamples(models.Model):
-    name  =  models.CharField(max_length=50)
+    name  =  models.CharField(max_length=50,default="")
     model = models.ForeignKey(MLModel,on_delete=models.CASCADE)
-    fields = JSONField()
+    xlabels = models.CharField(max_length=200,default="")
+    ylabel = models.CharField(max_length=50,default="")
+    classes = models.CharField(max_length=200,default="")
     path = models.CharField(max_length=100,default="")
 
     def __str__(self):

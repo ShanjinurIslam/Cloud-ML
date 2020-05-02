@@ -6,6 +6,7 @@ from django.db import models
 # Create your models here.
 class DLModel(models.Model):
     name = models.CharField(max_length=50)
+    api_name = models.CharField(max_length=50,default="")
     use_case = models.CharField(max_length=50)
     catagory = models.CharField(max_length=50)
 
