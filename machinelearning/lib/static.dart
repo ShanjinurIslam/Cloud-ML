@@ -5,3 +5,4 @@ String mlModelsURL =
 String dlModelsURL = baseUrl + "/dl/models";
 String mlmodelExamples = baseUrl + "/ml/modelexamples/";
 String dlmodelExamples = baseUrl + "/dl/modelexamples/";
+String mltestModel = baseUrl + "/ml/" ;

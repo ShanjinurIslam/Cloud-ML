@@ -15,21 +15,18 @@ class ModelPage extends StatefulWidget {
 }
 
 Future<List<Example>> examples(Model model) async {
-    String modelName = model.apiName ;
-    String url = model.type=='ml'?mlmodelExamples:dlmodelExamples;
-    print(url+modelName);
-    final response = await http.get(url+modelName);
-    Map<String, dynamic> json = jsonDecode(response.body);
-    List<dynamic> jsonModels = json['examples'];
-    List<Example> examples = new List<Example>();
-    
-    for (int i = 0; i < jsonModels.length; i++) {
-      Map<String, dynamic> json = jsonModels[i];
-      examples.add(Example.fromJson(json));
-    }
-    print(examples.length);
-    return examples;
+  String modelName = model.apiName;
+  String url = model.type == 'ml' ? mlmodelExamples : dlmodelExamples;
+  final response = await http.get(url + modelName);
+  Map<String, dynamic> json = jsonDecode(response.body);
+  List<dynamic> jsonModels = json['examples'];
+  List<Example> examples = new List<Example>();
+  for (int i = 0; i < jsonModels.length; i++) {
+    Map<String, dynamic> json = jsonModels[i];
+    examples.add(Example.fromJson(json));
   }
+  return examples;
+}
 
 class ModelPageState extends State<ModelPage> {
   @override
@@ -42,37 +39,36 @@ class ModelPageState extends State<ModelPage> {
         body: Column(
           children: <Widget>[
             Flexible(
-                flex: 2,
-                child: Container(
+              flex: 2,
+              child: Container(
                   color: Color.fromRGBO(29, 29, 39, 1),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            model.name.toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            model.catagory,
-                            style: TextStyle(
-                                color: Color.fromRGBO(36, 240, 182, 1),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ],
-                      ),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Spacer(flex: 2),
+                        Text(
+                          model.name.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          model.catagory,
+                          style: TextStyle(
+                              color: Color.fromRGBO(36, 240, 182, 1),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300),
+                        ),
+                        Spacer(flex: 1),
+                      ],
                     ),
-                  ),
-                )),
+                  )),
+            ),
             Flexible(
-                flex: 12,
+                flex: 11,
                 child: Container(
                   color: Colors.white,
                   child: Center(
@@ -86,7 +82,7 @@ class ModelPageState extends State<ModelPage> {
                           return ListView.builder(
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
-                                String name = snapshot.data[index].name;
+                                String name = snapshot.data[index].name.toString().toUpperCase();
                                 String catagory = model.catagory;
                                 String imgURL;
                                 if (catagory == "Classification") {
@@ -139,6 +135,17 @@ class ModelPageState extends State<ModelPage> {
                                                     icon: Icon(
                                                         CupertinoIcons.forward),
                                                     onPressed: () {
+                                                      Example example =
+                                                          snapshot.data[index];
+                                                      example.model =
+                                                          model.name;
+                                                      example.apiName =
+                                                          model.apiName;
+                                                      example.type = model.type;
+                                                      Navigator.pushNamed(
+                                                          context, '/testmodel',
+                                                          arguments: snapshot
+                                                              .data[index]);
                                                     }),
                                                 flex: 1,
                                               )

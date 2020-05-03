@@ -57,29 +57,28 @@ class ChoiceListState extends State<ChoiceList> {
                 flex: 2,
                 child: Container(
                   color: Color.fromRGBO(29, 29, 39, 1),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Home'.toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            'Available Models',
-                            style: TextStyle(
-                                color: Color.fromRGBO(36, 240, 182, 1),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ],
-                      ),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Spacer(flex: 2),
+                        Text(
+                          'Home'.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          'Available Models',
+                          style: TextStyle(
+                              color: Color.fromRGBO(36, 240, 182, 1),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300),
+                        ),
+                        Spacer(flex: 1),
+                      ],
                     ),
                   ),
                 )),
@@ -193,9 +192,10 @@ class ChoiceListState extends State<ChoiceList> {
                                                     icon: Icon(
                                                         CupertinoIcons.forward),
                                                     onPressed: () {
-                                                      Model model = snapshot
-                                                              .data[index];
-                                                      model.type = screen ? 'ml' : 'dl';
+                                                      Model model =
+                                                          snapshot.data[index];
+                                                      model.type =
+                                                          screen ? 'ml' : 'dl';
                                                       Navigator.pushNamed(
                                                           context, '/model',
                                                           arguments: model);

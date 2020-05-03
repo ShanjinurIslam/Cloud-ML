@@ -22,7 +22,8 @@ def load_model_examples(request,model_name):
 
 @api_view(['POST'])
 def linear_svc(request,example_id):
-    if request.method=='POST':
-        data = [float(x) for x in request.POST['data'].split(',')]
-        prediction = load_linear_svc(example_id,data)
-        return JsonResponse({'prediction': prediction}, safe=False)
+    data = request.data['data']
+    data = data.split(',')
+    data = [float(x) for x in data]
+    prediction = load_linear_svc(example_id,data)
+    return JsonResponse({'prediction': prediction}, safe=False)

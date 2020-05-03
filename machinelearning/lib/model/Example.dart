@@ -3,11 +3,14 @@ import 'dart:convert';
 class Example {
   final int id;
   final String name;
-  final String xlabels ;
-  final String ylabel ;
-  final String classes ;
+  final String xlabels;
+  final String ylabel;
+  final String classes;
+  String model ;
+  String apiName;
+  String type ;
 
-  Example({this.id, this.name,this.xlabels,this.ylabel,this.classes});
+  Example({this.id, this.name, this.xlabels, this.ylabel, this.classes});
 
   factory Example.fromJson(Map<String, dynamic> json) {
     return Example(

@@ -14,4 +14,5 @@ def load_linear_svc(example_id, data):
     example = get_object_or_404(MLModelExamples, pk=example_id)
     linear_svc = pickle.load(open(dir_path+example.path, 'rb'))
     prediction = linear_svc.predict(data)
-    return example.fields['classes'][prediction[0]]
+    predicted_class = example.classes.split(',')[prediction[0]]
+    return predicted_class
