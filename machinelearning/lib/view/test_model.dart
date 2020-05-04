@@ -57,7 +57,7 @@ class TestModelViewState extends State<TestModelView> {
           ? Center(child: CupertinoActivityIndicator())
           : SingleChildScrollView(
               child: Container(
-                  height: (1.5) * MediaQuery.of(context).size.height,
+                  height: (2) * MediaQuery.of(context).size.height,
                   child: Column(
                     children: <Widget>[
                       Flexible(
@@ -72,7 +72,7 @@ class TestModelViewState extends State<TestModelView> {
                                   flex: 2,
                                 ),
                                 Text(
-                                  'IRIS',
+                                  example.name.toUpperCase(),
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,

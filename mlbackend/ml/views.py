@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
 from .serializers import MLModelSerializer,MLModelExamplesSerializer
 from .models import MLModel,MLModelExamples
-from .ml_models import load_linear_svc
+from .ml_models import load_linear_svc,load_nbc
 import numpy as np
 # Create your views here.
 
@@ -26,4 +26,12 @@ def linear_svc(request,example_id):
     data = data.split(',')
     data = [float(x) for x in data]
     prediction = load_linear_svc(example_id,data)
+    return JsonResponse({'prediction': prediction}, safe=False)
+
+@api_view(['POST'])
+def nbc(request,example_id):
+    data = request.data['data']
+    data = data.split(',')
+    data = [float(x) for x in data]
+    prediction = load_nbc(example_id,data)
     return JsonResponse({'prediction': prediction}, safe=False)
