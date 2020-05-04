@@ -18,29 +18,24 @@ class TestModelView extends StatefulWidget {
 class TestModelViewState extends State<TestModelView> {
   List<String> xLabel;
   List<String> classes;
+  List<TextEditingController> controllers;
   String ylabel;
-  String input = "";
-  int current;
   String prediction = "";
   bool loading = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    current = 0;
   }
 
   void getPrediction(Example example, String data) async {
     String url = example.type == 'ml' ? mltestModel : mltestModel;
     url += example.apiName + '/' + (example.id).toString();
-    final http.Response response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String,String>{'data': data})
-    );
+    final http.Response response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{'data': data}));
     Map<String, dynamic> out = jsonDecode(response.body);
     setState(() {
       prediction = out['prediction'];
@@ -50,205 +45,265 @@ class TestModelViewState extends State<TestModelView> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = new TextEditingController();
     Example example = ModalRoute.of(context).settings.arguments;
     xLabel = example.xlabels.split(',');
-    int len = xLabel.length;
     classes = example.classes.split(',');
     ylabel = example.ylabel;
-    String data;
+    controllers =
+        new List.generate(xLabel.length, (i) => TextEditingController());
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: loading
           ? Center(child: CupertinoActivityIndicator())
-          : Column(
-              children: <Widget>[
-                Flexible(
-                  child: Container(
-                    color: Color.fromRGBO(29, 29, 39, 1),
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Spacer(
-                            flex: 2,
-                          ),
-                          Text(
-                            'IRIS',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            example.model,
-                            style: TextStyle(
-                                color: Color.fromRGBO(36, 240, 182, 1),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300),
-                          ),
-                          Spacer(
-                            flex: 1,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  flex: 2,
-                ),
-                Flexible(
-                  child: Container(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Labels',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            Wrap(
-                              children: xLabel
-                                  .map(
-                                    (String d) => Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                      child: Text(d),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                            Spacer(),
-                            Text('Target',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500)),
-                            Text(ylabel),
-                            Spacer(),
-                            Text('Classes',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500)),
-                            Wrap(
-                              children: classes
-                                  .map(
-                                    (String d) => Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                      child: Text(d),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                            Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  flex: 3,
-                ),
-                Flexible(
-                  child: Container(
-                      child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Align(
-                            alignment: Alignment.topLeft,
+          : SingleChildScrollView(
+              child: Container(
+                  height: (1.5) * MediaQuery.of(context).size.height,
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: Container(
+                          color: Color.fromRGBO(29, 29, 39, 1),
+                          child: Center(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  'Test Model',
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: TextField(
-                                    controller: controller,
-                                    onChanged: (text) {
-                                      data = text;
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: xLabel[current],
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  child: Center(
-                                    child: Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15)),
-                                          color: Colors.green,
-                                          onPressed: () {
-                                            if (current < len - 1) {
-                                              input += data + ',';
-                                              controller.clear();
-                                            } else {
-                                              input += data;
-                                              setState(() {
-                                                prediction = "";
-                                                loading = true;
-                                              });
-                                              getPrediction(example, input);
-                                              input = "";
-                                              controller.clear();
-                                            }
-                                            setState(() {
-                                              current = (current + 1) % 4;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: 100,
-                                            child: Center(
-                                                child: Text(
-                                              current < len - 1
-                                                  ? 'Next'
-                                                  : 'Submit',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            )),
-                                          ),
-                                        )),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
+                                Spacer(
+                                  flex: 2,
                                 ),
                                 Text(
-                                  'Prediction',
-                                  style: TextStyle(fontSize: 24),
+                                  'IRIS',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
-                                  child: Text(
-                                    prediction,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
+                                Text(
+                                  example.model,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(36, 240, 182, 1),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                                Spacer(
+                                  flex: 1,
                                 ),
                               ],
                             ),
-                          ))),
-                  flex: 8,
-                ),
-              ],
-            ),
+                          ),
+                        ),
+                        flex: 2,
+                      ),
+                      Flexible(
+                        child: Container(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Labels',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Wrap(
+                                    children: xLabel
+                                        .map(
+                                          (String d) => Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 10, 0),
+                                            child: Text(d),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  Spacer(),
+                                  Text('Target',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(ylabel),
+                                  Spacer(),
+                                  Text('Classes',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500)),
+                                  Wrap(
+                                    children: classes
+                                        .map(
+                                          (String d) => Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 10, 0),
+                                            child: Text(d),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  Spacer(),
+                                  Text('Accuracy',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(example.accuracy.toString() + '%')
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        flex: 4,
+                      ),
+                      Flexible(
+                        child: Container(
+                            child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        'Test Model',
+                                        style: TextStyle(fontSize: 24),
+                                      ),
+                                      Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                          child: SizedBox(
+                                            height: (MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    15) *
+                                                xLabel.length,
+                                            child: ListView.builder(
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount: xLabel.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 10, 0, 10),
+                                                        child:
+                                                            Text(xLabel[index]),
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                        child: TextField(
+                                                          keyboardType: TextInputType
+                                                              .numberWithOptions(
+                                                                  decimal: true,
+                                                                  signed:
+                                                                      false),
+                                                          controller:
+                                                              controllers[
+                                                                  index],
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      'Enter Value'),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                }),
+                                          )),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        child: Center(
+                                          child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  10, 10, 10, 0),
+                                              child: RaisedButton(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)),
+                                                color: Colors.green,
+                                                onPressed: () {
+                                                  String data = "";
+                                                  setState(() {
+                                                    loading = true;
+                                                  });
+                                                  for (int i = 0;
+                                                      i < xLabel.length;
+                                                      i++) {
+                                                    if (controllers[i]
+                                                        .text
+                                                        .isEmpty) {
+                                                      setState(() {
+                                                        loading = false;
+                                                      });
+                                                    } else {
+                                                      data +=
+                                                          controllers[i].text +
+                                                              ',';
+                                                      controllers[i].clear();
+                                                    }
+                                                  }
+                                                  data = data.substring(
+                                                      0, data.length - 1);
+
+                                                  getPrediction(example, data);
+                                                  setState(() {
+                                                    loading = true;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  width: 100,
+                                                  child: Center(
+                                                      child: Text(
+                                                    'Submit',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )),
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Text(
+                                        'Prediction',
+                                        style: TextStyle(fontSize: 24),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 10, 10, 0),
+                                        child: Text(
+                                          prediction,
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ))),
+                        flex: 13,
+                      ),
+                    ],
+                  ))),
     );
   }
 }

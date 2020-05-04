@@ -16,6 +16,7 @@ class MLModelExamples(models.Model):
     xlabels = models.CharField(max_length=200,default="")
     ylabel = models.CharField(max_length=50,default="")
     classes = models.CharField(max_length=200,default="")
+    accuracy = models.FloatField(default=0)
     path = models.CharField(max_length=100,default="")
 
     def __str__(self):

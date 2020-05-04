@@ -6,11 +6,12 @@ class Example {
   final String xlabels;
   final String ylabel;
   final String classes;
-  String model ;
+  final double accuracy;
+  String model;
   String apiName;
-  String type ;
+  String type;
 
-  Example({this.id, this.name, this.xlabels, this.ylabel, this.classes});
+  Example({this.id, this.name, this.xlabels, this.ylabel, this.classes,this.accuracy});
 
   factory Example.fromJson(Map<String, dynamic> json) {
     return Example(
@@ -19,6 +20,7 @@ class Example {
       xlabels: json['xlabels'],
       ylabel: json['ylabel'],
       classes: json['classes'],
+      accuracy: json['accuracy']
     );
   }
 }

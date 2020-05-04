@@ -9,4 +9,4 @@ class MLModelSerializer(serializers.ModelSerializer):
 class MLModelExamplesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MLModelExamples
-        fields = ('id','name','xlabels','ylabel','classes')
+        fields = ('id','name','xlabels','ylabel','classes','accuracy')
