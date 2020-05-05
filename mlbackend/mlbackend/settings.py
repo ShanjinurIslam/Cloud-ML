@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'utils',
     'ml',
-    'dl'
+    'dl',
+    'frontend'
 ]
 
 MIDDLEWARE = [

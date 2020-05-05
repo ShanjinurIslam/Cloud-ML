@@ -1,0 +1,78 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h1 class="mt-5">Cloud ML Landing Page</h1>
+        <p class="lead">A template backend for ML prediction for App using django Server</p>
+      </div>
+    </div>
+  </div>
+
+    <br/>
+
+  <div class="container">
+    <h4>Available Machine Learning Models (In development)</h4>
+
+    <ul>
+    {% for model in mlmodels %}
+
+    <li>{{model.name}}</li>
+
+    {% endfor %}
+    </ul>
+  </div>
+
+  <br/>
+
+  <div class="container">
+    <h4>Available Deep Learning Models (In development)</h4>
+
+    <ul>
+    {% for model in dlmodels %}
+
+    <li>{{model.name}}</li>
+
+    {% endfor %}
+    </ul>
+  </div>
+{% endblock content %}
+<!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h1 class="mt-5">Cloud ML Landing Page</h1>
+        <p class="lead">A template backend for ML prediction for App using django Server</p>
+      </div>
+    </div>
+  </div>
+
+    <br/>
+
+  <div class="container">
+    <h4>Available Machine Learning Models</h4>
+
+    <ul>
+    {% for model in mlmodels %}
+
+    <li>{{model.name}}</li>
+
+    {% endfor %}
+    </ul>
+  </div>
+
+  <br/>
+
+  <div class="container">
+    <h4>Available Deep Learning Models (In development)</h4>
+
+    <ul>
+    {% for model in dlmodels %}
+
+    <li>{{model.name}}</li>
+
+    {% endfor %}
+    </ul>
+  </div>
